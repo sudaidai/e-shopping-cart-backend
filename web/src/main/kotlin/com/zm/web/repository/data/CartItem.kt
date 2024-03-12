@@ -28,10 +28,19 @@ data class CartItem(
     // The quantity of the product in the cart.
     var quantity: Int = 0
 ) {
-    // Function to calculate the item price.
+    // This function calculates and returns the item price using BigDecimal arithmetic.
     fun getItemPrice(): BigDecimal {
-        // TODO compute prices with Product
-        return BigDecimal.ZERO
+        // Create a BigDecimal instance representing the quantity of the product.
+        // This ensures precise arithmetic, especially for decimal values.
+        val quantityBigDecimal = BigDecimal(quantity)
+
+        // Use the non-null assertion (!! operator) to assert that 'product' is not null.
+        // This is appropriate if 'product' is guaranteed to be non-null in this context.
+        // If there's a chance of 'product' being null, additional null checks should be considered.
+        val productPrice = product!!.price
+
+        // Multiply the quantity by the product price to get the total item price.
+        return quantityBigDecimal.multiply(productPrice)
     }
 }
 
