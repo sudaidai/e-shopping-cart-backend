@@ -1,0 +1,38 @@
+server:
+  port: 8000
+
+spring:
+  profiles:
+    active: ${ENV:local}
+  application:
+    name:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${myServer.mysql}/e-shopping?allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+    username: ${myServer.username}
+    password: ${myServer.password}
+    hikari:
+      maximum-pool-size: 4
+  jpa:
+    open-in-view: false
+    properties:
+      jakarta:
+        persistence:
+          sharedCache:
+            mode: ALL
+      hibernate:
+        ddl-auto: update
+        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    database: mysql
+    show-sql: true
+    format_sql: true
+
+logging:
+  file:
+    name: /var/log/logs_${server.port}/server.log
+  pattern:
+    file: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15}:%line - %msg%n'
+    console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15}:%line - %msg%n'
+  level:
+    root: INFO

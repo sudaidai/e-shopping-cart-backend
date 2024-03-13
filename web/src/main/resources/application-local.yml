@@ -1,0 +1,12 @@
+myServer:
+  mysql: localhost:3306
+  username: root
+  password: root!@#$
+
+logging:
+  level:
+    root: info
+    org.hibernate:
+      SQL: DEBUG
+      type.descriptor.sql.BasicBinder: TRACE
+
