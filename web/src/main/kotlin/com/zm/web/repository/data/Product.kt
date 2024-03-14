@@ -30,6 +30,8 @@ data class Product(
     var updateTime: Instant? = null,
 
     var tookOffTime: Instant? = null,
+
+    var listedTime: Instant? = null
 ) {
     @PreUpdate
     fun preUpdate() {

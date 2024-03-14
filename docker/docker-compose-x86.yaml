@@ -1,0 +1,131 @@
+# Thanks for https://github.com/Jian-Min-Huang
+
+version: "3.9"
+
+services:
+  redis:
+    image: bitnami/redis:${redis_version}
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - REDIS_PASSWORD=rootroot
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+    networks:
+      - default
+
+  redis-exporter:
+    image: bitnami/redis-exporter:${redis_exporter_version}
+    environment:
+      - REDIS_ADDR=redis:6379
+      - REDIS_PASSWORD=rootroot
+    expose:
+      - 9121
+    networks:
+      - default
+
+  rabbitmq:
+    image: bitnami/rabbitmq:${rabbitmq_version}
+    environment:
+      - RABBITMQ_USERNAME=rabbitmq
+      - RABBITMQ_PASSWORD=rabbitmq
+    expose:
+      # prometheus
+      - 15692
+    ports:
+      # management-ui
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./enabled_plugins:/etc/rabbitmq/enabled_plugins
+    networks:
+      - default
+
+  postgresql:
+    image: bitnami/postgresql:${postgresql_version}
+    environment:
+      - POSTGRES_PASSWORD=rootroot
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    networks:
+      - default
+
+  postgresql-exporter:
+    image: bitnami/postgres-exporter:${postgresql_exporter_version}
+    environment:
+      - DATA_SOURCE_NAME=postgresql://postgres:rootroot@postgresql:5432/postgres?sslmode=disable
+    expose:
+      - 9187
+    networks:
+      - default
+
+  mysql:
+    image: bitnami/mysql:${mysql_version}
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootroot
+    expose:
+      - 3306
+    ports:
+      - "3306:3306"
+    networks:
+      - default
+
+  mysql-exporter:
+    image: bitnami/mysqld-exporter:${mysql_exporter_version}
+    environment:
+      - DATA_SOURCE_NAME=root:rootroot@(mysql:3306)
+    expose:
+      - 9104
+    networks:
+      - default
+
+  mongodb:
+    image: bitnami/mongodb:${mongodb_version}
+    environment:
+      - MONGODB_ROOT_PASSWORD=rootroot
+      - MONGODB_USERNAME=mongo
+      - MONGODB_PASSWORD=mongo
+      - MONGODB_DATABASE=mongo
+    expose:
+      - 27017
+    ports:
+      - "27017:27017"
+    networks:
+      - default
+
+  grafana:
+    image: bitnami/grafana:${grafana_version}
+    ports:
+      - "3000:3000"
+    networks:
+      - default
+    depends_on:
+      - prometheus
+
+  loki:
+    image: bitnami/grafana-loki:${loki_version}
+    expose:
+      - 3100
+    ports:
+      - "3100:3100"
+    networks:
+      - default
+
+  prometheus:
+    image: bitnami/prometheus:${prometheus_version}
+    expose:
+      - 9090
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    networks:
+      - default
+
+networks:
+  default:
