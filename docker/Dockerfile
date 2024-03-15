@@ -1,11 +1,12 @@
-# Use the official MySQL image as the base image
-FROM bitnami/mysql:${mysql_version}
+#FROM arm64v8/mysql:latest
+FROM bitnami/mysql:latest
 
 # Set environment variables
-ENV MYSQL_ROOT_PASSWORD=root!@#$
+ENV MYSQL_ROOT_PASSWORD=root1234
 
-# Expose the port on which MySQL runs
+# Copy the initialization script into the docker-entrypoint-initdb.d directory
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Expose port if necessary
 EXPOSE 3306
 
-# Start MySQL server
-CMD ["mysqld"]

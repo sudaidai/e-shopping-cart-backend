@@ -65,7 +65,7 @@ services:
   mysql:
     image: bitnami/mysql:${mysql_version}
     environment:
-      - MYSQL_ROOT_PASSWORD=rootroot
+      - MYSQL_ROOT_PASSWORD=root1234
     expose:
       - 3306
     ports:
