@@ -6,7 +6,8 @@ import org.hibernate.annotations.CreationTimestamp
 import java.math.BigDecimal
 import java.time.Instant
 
-@Entity(name = "product")
+@Entity
+@Table(name = "product")
 data class Product(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

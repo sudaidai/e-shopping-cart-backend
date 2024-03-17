@@ -6,6 +6,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.hibernate.orm") version "6.4.4.Final"
 	id("org.graalvm.buildtools.native") version "0.9.28"
+	id("org.jetbrains.kotlin.plugin.allopen") version "1.9.22"
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
@@ -48,5 +49,11 @@ hibernate {
 	enhancement {
 		enableAssociationManagement.set(true)
 	}
+}
+
+allOpen {
+	annotation("jakarta.persistence.Entity")
+	annotation("jakarta.persistence.MappedSuperclass")
+	annotation("jakarta.persistence.Embeddable")
 }
 

@@ -5,7 +5,8 @@ import java.math.BigDecimal
 
 // data before class indicates that this class is a data class, providing additional functionality.
 // The @Entity annotation is from JPA (Java Persistence API) and is used to mark this class as an entity.
-@Entity(name = "cart_item")
+@Entity
+@Table(name = "cart_item")
 data class CartItem(
 
     // The @Id annotation marks this property as the primary key of the entity.
