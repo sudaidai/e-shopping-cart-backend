@@ -1,2 +1,1 @@
-CREATE DATABASE IF NOT EXISTS `e-shopping`;
-USE `e-shopping`;
+CREATE SCHEMA IF NOT EXISTS `e-shopping`;
