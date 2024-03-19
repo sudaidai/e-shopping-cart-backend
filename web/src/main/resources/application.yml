@@ -28,6 +28,10 @@ spring:
     show-sql: true
     format_sql: true
 
+graphql:
+  packages:
+    - "com.zm.web.query"
+
 logging:
   file:
     name: /var/log/logs_${server.port}/server.log
