@@ -27,10 +27,10 @@ spring:
     database: mysql
     show-sql: true
     format_sql: true
-
-graphql:
-  packages:
-    - "com.zm.web.query"
+  graphql:
+    path: /graphql
+    graphiql:
+      enabled: true
 
 logging:
   file:
