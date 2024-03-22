@@ -1,12 +1,15 @@
-myServer:
-  mysql: localhost:3306
-  username: root
-  password: root1234
+# This file is configuration for local environment
 
+# Configuration for connecting to the MySQL server
+myServer:
+  mysql: localhost:3306  # MySQL server hostname and port
+  username: root         # MySQL username
+  password: root1234     # MySQL password
+
+# Logging configuration
 logging:
   level:
-    root: info
+    root: info  # Root logger level set to 'info'
     org.hibernate:
-      SQL: DEBUG
-      type.descriptor.sql.BasicBinder: TRACE
-
+      SQL: DEBUG  # Sets logging level for Hibernate SQL statements to 'DEBUG'
+      type.descriptor.sql.BasicBinder: TRACE  # Sets logging level for SQL bind parameter values to 'TRACE'
