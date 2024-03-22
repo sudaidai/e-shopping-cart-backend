@@ -1,4 +1,5 @@
 type Query {
+    hello: String!
     getPosts: [Post]!
     recentPosts(limit: Int!, offset: Int!): [Post]!
 }
