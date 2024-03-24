@@ -3,8 +3,8 @@
 # Configuration for connecting to the MySQL server
 myServer:
   mysql: localhost:3306  # MySQL server hostname and port
-  username: root         # MySQL username
-  password: root1234     # MySQL password
+  username: root
+  password: root1234
 
 # Logging configuration
 logging:
@@ -13,3 +13,8 @@ logging:
     org.hibernate:
       SQL: DEBUG  # Sets logging level for Hibernate SQL statements to 'DEBUG'
       type.descriptor.sql.BasicBinder: TRACE  # Sets logging level for SQL bind parameter values to 'TRACE'
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create

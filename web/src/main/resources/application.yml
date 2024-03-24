@@ -20,15 +20,15 @@ spring:
   jpa:
     # Configures JPA properties
     open-in-view: false
+    hibernate:
+      ddl-auto: none
+      globally_quoted_identifiers: true
+      dialect: org.hibernate.dialect.MySQLDialect
     properties:
       jakarta:
         persistence:
           sharedCache:
             mode: ALL
-      hibernate:
-        ddl-auto: update
-        globally_quoted_identifiers: true
-        dialect: org.hibernate.dialect.MySQLDialect
     database: mysql
     show-sql: true # Whether to log SQL statements
     format_sql: true # Whether to format SQL queries
