@@ -47,3 +47,7 @@ logging:
     console: '%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{15}:%line - %msg%n'
   level:
     root: INFO # Sets the root logger level to INFO
+
+spring-doc:
+  swagger-ui:
+    enabled: true
