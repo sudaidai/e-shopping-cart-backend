@@ -6,6 +6,10 @@ import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.security.SecurityRequirement
 
+/**
+ * Configuration for Swagger.
+ * Access the Swagger UI at {server}/swagger-ui/index.html
+ */
 @Configuration
 class SpringDocConfiguration {
 
@@ -18,8 +22,8 @@ class SpringDocConfiguration {
 
     private fun getInfo(): Info {
         return Info()
-            .title("Shopping Cart Api")
-            .description("The API documentation for shopping cart")
+            .title("Shopping Cart API")
+            .description("API documentation for the shopping cart service.")
             .version("1.0.0")
     }
 }
