@@ -1,7 +1,22 @@
+
 type Query {
+    # A simple query returning a greeting string.
     hello: String!
+
+    # Retrieves a list of all posts.
     getPosts: [Post]!
+
+    # Retrieves a list of recent posts with pagination support.
     recentPosts(limit: Int!, offset: Int!): [Post]!
+
+    # ----- App usage start from this line -----
+
+    # Retrieves a paginated list of cart items.
+    # Returns a CartItemConnection object representing a paginated list of CartItem objects.
+    # Each CartItem object contains information about a product in the cart.
+    listCartItems(page: Int!, size: Int!): CartItemConnection!
+
+    # ----- App usage end from this line -----
 }
 
 type Mutation {
@@ -16,3 +31,38 @@ type Post {
     title: String!
     description: String
 }
+
+# ----- App usage start from this line -----
+
+type CartItemConnection {
+    pageInfo: PageInfo!
+    edges: [CartItemEdge!]!
+}
+
+type PageInfo {
+    hasNextPage: Boolean!
+    hasPreviousPage: Boolean!
+    startCursor: String
+    endCursor: String
+}
+
+type CartItemEdge {
+    cursor: String!
+    node: CartItem!
+}
+
+type CartItem {
+    id: Int!
+    product: Product
+    quantity: Int!
+    itemPrice: String!
+}
+
+type Product {
+    id: ID!
+    name: String!
+    price: String!
+    description: String
+}
+
+# ----- App usage end from this line -----

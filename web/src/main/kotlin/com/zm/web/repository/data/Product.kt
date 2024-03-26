@@ -5,13 +5,16 @@ import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import java.math.BigDecimal
 import java.time.Instant
+import java.util.*
 
 @Entity
 @Table(name = "product")
 data class Product(
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    @GeneratedValue
+    @Column(columnDefinition = "BINARY(16)")
+    var id: UUID? = null,
 
     @Column(unique = true, length = 50)
     var name: String? = null,
@@ -34,6 +37,14 @@ data class Product(
 
     var listedTime: Instant? = null
 ) {
+    @PrePersist
+    fun prePersist() {
+        if (id == null) {
+            id = UUID.randomUUID()
+        }
+        updateTime = createTime
+    }
+
     @PreUpdate
     fun preUpdate() {
         updateTime = Instant.now()
