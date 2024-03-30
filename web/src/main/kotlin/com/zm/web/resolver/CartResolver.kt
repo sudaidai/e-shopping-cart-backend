@@ -8,9 +8,9 @@ import org.springframework.stereotype.Controller
 import java.util.*
 
 @Controller
-class CartResolver (
+class CartResolver(
     private val cartService: CartService
-){
+) {
 
     @QueryMapping
     fun listCartItems(
