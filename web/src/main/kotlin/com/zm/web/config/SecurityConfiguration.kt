@@ -1,5 +1,6 @@
 package com.zm.web.config
 
+import com.zm.web.filter.JwtAuthenticationFilter
 import com.zm.web.service.JwtUserDetailService
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -28,7 +30,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
     `in` = SecuritySchemeIn.HEADER
 )
 @Configuration
-class SecurityConfiguration() {
+class SecurityConfiguration(
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+) {
 
     companion object {
         private val UNAUTHORIZED_ROUTE = arrayOf(
@@ -38,6 +42,8 @@ class SecurityConfiguration() {
             "/v3/api-docs",
             "/v3/api-docs/swagger-config",
             "/swagger-ui/**",
+            "/api/auth",
+            "/api/member"
         )
     }
 
@@ -53,6 +59,7 @@ class SecurityConfiguration() {
             .sessionManagement { sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .cors { cors -> cors.configurationSource(corsConfigurationSource()) }
             .csrf { csrf -> csrf.disable() }
+            .addFilterBefore(jwtAuthenticationFilter, BasicAuthenticationFilter::class.java)
         return http.build()
     }
 

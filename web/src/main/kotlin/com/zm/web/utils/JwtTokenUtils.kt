@@ -30,12 +30,7 @@ object JwtTokenUtils {
         return !isTokenExpired(token, key)
     }
 
-    private fun <T> getClaimFromToken(token: String, key: String, claimsResolver: (Claims) -> T): T {
-        val claims = getAllClaimsFromToken(token, key)
-        return claimsResolver.invoke(claims)
-    }
-
-    private fun getAllClaimsFromToken(token: String, key: String): Claims {
+    fun getAllClaimsFromToken(token: String, key: String): Claims {
         val signingKey = convertToSecretKey(key)
 
         val parser: JwtParser = Jwts.parserBuilder()
@@ -43,6 +38,11 @@ object JwtTokenUtils {
             .build()
 
         return parser.parseClaimsJws(token).body
+    }
+
+    private fun <T> getClaimFromToken(token: String, key: String, claimsResolver: (Claims) -> T): T {
+        val claims = getAllClaimsFromToken(token, key)
+        return claimsResolver.invoke(claims)
     }
 
     private fun convertToSecretKey(key: String): SecretKey {

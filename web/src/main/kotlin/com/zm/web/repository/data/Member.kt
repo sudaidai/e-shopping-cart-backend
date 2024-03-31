@@ -10,7 +10,7 @@ data class Member(
     var id: Long? = null,
 
     @Column(unique = true)
-    var name: String? = null,
+    var account: String? = null,
 
     var password: String? = null
 )

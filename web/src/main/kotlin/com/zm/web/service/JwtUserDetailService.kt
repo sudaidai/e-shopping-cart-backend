@@ -17,10 +17,10 @@ class JwtUserDetailService : UserDetailsService {
         this.memberRepository = memberRepository
     }
 
-    override fun loadUserByUsername(name: String?): UserDetails {
-        val member = name?.let { memberRepository.findByName(it) }
-            ?: throw UsernameNotFoundException("Member not found with name: $name")
+    override fun loadUserByUsername(account: String?): UserDetails {
+        val member = account?.let { memberRepository.findByAccount(it) }
+            ?: throw UsernameNotFoundException("Member not found with account: $account")
 
-        return User(member.name, member.password, listOf(SimpleGrantedAuthority("member")))
+        return User(member.account, member.password, listOf(SimpleGrantedAuthority("MEMBER")))
     }
 }

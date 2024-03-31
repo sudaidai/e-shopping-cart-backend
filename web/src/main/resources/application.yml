@@ -51,3 +51,6 @@ logging:
 spring-doc:
   swagger-ui:
     enabled: true
+
+jwt:
+  key: ba3253876aed6bc22d4a6ff53

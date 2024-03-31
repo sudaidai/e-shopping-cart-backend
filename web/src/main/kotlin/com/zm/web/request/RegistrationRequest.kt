@@ -2,9 +2,9 @@ package com.zm.web.request
 
 import jakarta.validation.constraints.NotBlank
 
-data class Registration(
+data class RegistrationRequest(
     @field:NotBlank
-    val name: String,
+    val account: String,
 
     @field:NotBlank
     val password: String

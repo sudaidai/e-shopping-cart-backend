@@ -3,6 +3,7 @@ package com.zm.web.repository.data
 import com.zm.web.constant.ProductStatus
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.GenericGenerator
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
@@ -13,6 +14,10 @@ data class Product(
 
     @Id
     @GeneratedValue
+    @GenericGenerator(
+        name = "UUID",
+        strategy = "org.hibernate.id.UUIDGenerator"
+    )
     @Column(columnDefinition = "BINARY(16)")
     var id: UUID? = null,
 
