@@ -21,7 +21,8 @@ data class Member(
 
     var country: String? = null,
 
-    var isDelete: Boolean = false,
+    @Column(nullable = true)
+    var isDelete: Boolean? = false,
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
