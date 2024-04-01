@@ -21,10 +21,15 @@ data class Member(
 
     var country: String? = null,
 
+    var phone: String? = null,
+
     @Column(nullable = true)
     var isDelete: Boolean? = false,
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
-    var createTime: Instant? = null
+    var createTime: Instant? = null,
+
+    @Temporal(TemporalType.TIMESTAMP)
+    var updateTime: Instant? = null
 )
