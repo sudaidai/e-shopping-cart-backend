@@ -21,6 +21,8 @@ data class Member(
 
     var country: String? = null,
 
+    var address: String? = null,
+
     var phone: String? = null,
 
     @Column(nullable = true)
