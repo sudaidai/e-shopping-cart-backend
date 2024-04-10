@@ -36,7 +36,6 @@ class SecurityConfiguration(
     
     companion object {
         private val UNAUTHORIZED_ROUTE = arrayOf(
-            "/api/hello",
             "/graphql",
             "/graphiql",
             "/v3/api-docs",

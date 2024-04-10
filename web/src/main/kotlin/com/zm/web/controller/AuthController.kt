@@ -17,7 +17,12 @@ class AuthController (
 
     @Operation(summary = "Authenticate with account and password.")
     @PostMapping
-    fun login(@Valid @RequestBody loginRequest: LoginRequest): String? {
+    fun login(@Valid @RequestBody loginRequest: LoginRequest): LoginResponse? {
         return authenticationService.authenticate(loginRequest.account, loginRequest.password)
+            ?.let { LoginResponse(it) }
     }
 }
+
+data class LoginResponse(
+    val token: String
+)
