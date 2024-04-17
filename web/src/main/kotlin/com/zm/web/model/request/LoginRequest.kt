@@ -1,4 +1,4 @@
-package com.zm.web.request
+package com.zm.web.model.request
 
 import jakarta.validation.constraints.NotBlank
 

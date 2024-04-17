@@ -32,10 +32,10 @@ class JwtAuthenticationFilter(
             val jwtToken = requestTokenHeader.removePrefix(BEARER_PREFIX)
             if (JwtTokenUtils.validateToken(jwtToken, jwtKey)) {
                 val claims = JwtTokenUtils.getAllClaimsFromToken(jwtToken, jwtKey)
-                val username = claims.subject
+                val account = claims.subject
                 val authorities = listOf(SimpleGrantedAuthority("MEMBER"))
 
-                val userDetails = User(username, "", authorities)
+                val userDetails = User(account, "", authorities)
                 val authToken = UsernamePasswordAuthenticationToken(
                     userDetails, null, userDetails.authorities
                 )

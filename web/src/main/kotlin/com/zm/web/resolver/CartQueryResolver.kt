@@ -1,5 +1,6 @@
 package com.zm.web.resolver
 
+import com.zm.web.model.response.CartItemResponse
 import com.zm.web.service.CartService
 import org.springframework.data.domain.Page
 import org.springframework.graphql.data.method.annotation.Argument
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Controller
 import java.util.*
 
 @Controller
-class CartResolver(
+class CartQueryResolver(
     private val cartService: CartService
 ) {
 
@@ -16,21 +17,7 @@ class CartResolver(
     fun listCartItems(
         @Argument page: Int,
         @Argument size: Int
-    ): Page<GraphQLCartItem> {
+    ): Page<CartItemResponse> {
         return cartService.listCartItems(page, size)
     }
 }
-
-data class GraphQLCartItem(
-    val id: Int,
-    val product: GraphQLProduct,
-    val quantity: Int,
-    val itemPrice: String
-)
-
-data class GraphQLProduct(
-    val id: UUID,
-    val name: String,
-    val price: String,
-    val description: String
-)

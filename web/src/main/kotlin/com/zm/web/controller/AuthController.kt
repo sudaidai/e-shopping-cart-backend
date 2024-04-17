@@ -1,6 +1,6 @@
 package com.zm.web.controller
 
-import com.zm.web.request.LoginRequest
+import com.zm.web.model.request.LoginRequest
 import com.zm.web.service.AuthenticationService
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid

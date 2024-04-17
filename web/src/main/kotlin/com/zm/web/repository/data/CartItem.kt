@@ -1,12 +1,16 @@
 package com.zm.web.repository.data
 
+import com.zm.web.model.ProductDTO
+import com.zm.web.model.response.CartItemResponse
 import jakarta.persistence.*
 import java.math.BigDecimal
+import java.util.*
 
 // data before class indicates that this class is a data class, providing additional functionality.
 // The @Entity annotation is from JPA (Java Persistence API) and is used to mark this class as an entity.
 @Entity
-@Table(name = "cart_item")
+@Table(name = "cart_item",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["member_id", "product_id"])])
 data class CartItem(
 
     // The @Id annotation marks this property as the primary key of the entity.
@@ -42,6 +46,26 @@ data class CartItem(
 
         // Multiply the quantity by the product price to get the total item price.
         return quantityBigDecimal.multiply(productPrice)
+    }
+
+    fun addQuantity(quantity: Int) {
+        this.quantity = this.quantity + quantity
+    }
+
+    fun toCartItemResponse(): CartItemResponse {
+        val itemPrice = this.getItemPrice().toString()
+        val graphqlProduct = ProductDTO(
+            id = this.product?.id ?: UUID.randomUUID(),
+            name = this.product?.name ?: "",
+            price = this.product?.price?.toString() ?: "0",
+            description = this.product?.description ?: ""
+        )
+        return CartItemResponse(
+            id = this.id!!.toInt(),
+            product = graphqlProduct,
+            quantity = this.quantity,
+            itemPrice = itemPrice
+        )
     }
 }
 

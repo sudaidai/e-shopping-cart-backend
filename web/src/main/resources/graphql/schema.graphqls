@@ -24,6 +24,13 @@ type Mutation {
         title: String!,
         description: String!
     ): Post!
+
+    # ----- App usage start from this line -----
+    addToCart(
+        productId: ID!
+        quantity: Int!
+    ): CartItem!
+    # ----- App usage end from this line -----
 }
 
 type Post {

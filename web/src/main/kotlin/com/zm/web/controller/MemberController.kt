@@ -2,7 +2,7 @@ package com.zm.web.controller
 
 import com.zm.web.repository.MemberRepository
 import com.zm.web.repository.data.Member
-import com.zm.web.request.RegistrationRequest
+import com.zm.web.model.request.RegistrationRequest
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
