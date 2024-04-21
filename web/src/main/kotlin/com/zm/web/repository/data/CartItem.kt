@@ -52,6 +52,11 @@ data class CartItem(
         this.quantity = this.quantity + quantity
     }
 
+    fun reduceQuantity(quantity: Int) {
+        val reducedQuantity = this.quantity - quantity
+        this.quantity = if (reducedQuantity >= 0) reducedQuantity else 0
+    }
+
     fun toCartItemResponse(): CartItemResponse {
         val itemPrice = this.getItemPrice().toString()
         val graphqlProduct = ProductDTO(

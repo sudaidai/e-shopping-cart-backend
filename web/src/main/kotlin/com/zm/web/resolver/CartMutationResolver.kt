@@ -8,7 +8,7 @@ import java.util.*
 
 @Controller
 class CartMutationResolver(
-    private val cartService: CartService,
+    private val cartService: CartService
 ) {
 
     @MutationMapping
