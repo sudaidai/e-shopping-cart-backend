@@ -30,6 +30,8 @@ type Mutation {
         productId: ID!
         quantity: Int!
     ): CartItem!
+
+    clearCart: Boolean!
     # ----- App usage end from this line -----
 }
 

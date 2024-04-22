@@ -15,4 +15,9 @@ class CartMutationResolver(
     fun addToCart(productId: UUID, quantity: Int): CartItemResponse {
         return cartService.addToCart(productId, quantity)
     }
+
+    @MutationMapping
+    fun clearCart(): Boolean {
+        return cartService.clearCart()
+    }
 }

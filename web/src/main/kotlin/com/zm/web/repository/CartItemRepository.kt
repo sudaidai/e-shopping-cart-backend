@@ -18,5 +18,5 @@ interface CartItemRepository : JpaRepository<CartItem, Long> {
      */
     fun findByMember(member: Member, pageable: Pageable): Page<CartItem>
 
-    fun findByMemberAndProduct(member: Member, product: Product): CartItem?
+    fun deleteByMember(member: Member): Int
 }
