@@ -1,3 +1,4 @@
+scalar Long
 
 type Query {
     # A simple query returning a greeting string.
@@ -32,7 +33,25 @@ type Mutation {
     ): CartItem!
 
     clearCart: Boolean!
+
+    updateCart(
+        cartUpdates: [CartUpdateInput!]!
+    ): [CartItem!]!
     # ----- App usage end from this line -----
+}
+
+input CartUpdateInput {
+    productId: ID
+    cartItemId: Long
+    quantity: Int
+    action: CartUpdateAction!
+}
+
+enum CartUpdateAction {
+    ADD
+    UPDATE
+    REMOVE
+    CLEAR
 }
 
 type Post {
@@ -61,7 +80,7 @@ type CartItemEdge {
 }
 
 type CartItem {
-    id: Int!
+    id: Long!
     product: Product
     quantity: Int!
     itemPrice: String!

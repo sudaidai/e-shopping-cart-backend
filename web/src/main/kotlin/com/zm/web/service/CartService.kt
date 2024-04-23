@@ -1,5 +1,7 @@
 package com.zm.web.service;
 
+import com.zm.web.constant.CartAction
+import com.zm.web.model.request.CartItemUpdateRequest
 import com.zm.web.model.response.CartItemResponse
 import com.zm.web.repository.CartItemRepository
 import com.zm.web.repository.data.CartItem
@@ -39,6 +41,44 @@ class CartService(
         val member = memberService.getCurrentMember()
         val rowsDeleted = cartItemRepository.deleteByMember(Member(id = member.id))
         return rowsDeleted > 0
+    }
+
+    fun updateCart(updateCartRequest: List<CartItemUpdateRequest>): List<CartItemResponse> {
+        val member = memberService.getCurrentMember()
+        val updatedCartItems = mutableListOf<CartItemResponse>()
+
+        for (updateCartItem in updateCartRequest) {
+            when (updateCartItem.action) {
+                CartAction.ADD -> {
+                    val cartItem = updateCartItem.quantity?.let {
+                        CartItem(
+                            member = Member(id = member.id),
+                            product = Product(id = updateCartItem.productId),
+                            quantity = it
+                        )
+                    }
+                    cartItem?.let { cartItemRepository.save(it).toCartItemResponse() }?.let { updatedCartItems.add(it) }
+                }
+                CartAction.UPDATE -> {
+                    val cartItem = updateCartItem.cartItemId?.let { cartItemRepository.findById(it) }
+                    if (cartItem != null) {
+                        if (cartItem.isPresent) {
+                            val existingCartItem = cartItem.get()
+                            existingCartItem.quantity = updateCartItem.quantity!!
+                            updatedCartItems.add(cartItemRepository.save(existingCartItem).toCartItemResponse())
+                        }
+                    }
+                }
+                CartAction.REMOVE -> {
+                    updateCartItem.cartItemId?.let { cartItemRepository.deleteById(it) }
+                }
+                CartAction.CLEAR -> {
+                    cartItemRepository.deleteByMember(Member(id = member.id))
+                }
+            }
+        }
+
+        return updatedCartItems
     }
 }
 

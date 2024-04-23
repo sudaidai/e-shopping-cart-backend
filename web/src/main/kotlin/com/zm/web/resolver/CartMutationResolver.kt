@@ -1,5 +1,6 @@
 package com.zm.web.resolver
 
+import com.zm.web.model.request.CartItemUpdateRequest
 import com.zm.web.model.response.CartItemResponse
 import com.zm.web.service.CartService
 import org.springframework.graphql.data.method.annotation.MutationMapping
@@ -19,5 +20,10 @@ class CartMutationResolver(
     @MutationMapping
     fun clearCart(): Boolean {
         return cartService.clearCart()
+    }
+
+    @MutationMapping
+    fun updateCart(updateCartRequest: List<CartItemUpdateRequest>): List<CartItemResponse> {
+        return cartService.updateCart(updateCartRequest)
     }
 }
