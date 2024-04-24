@@ -1,5 +1,3 @@
-scalar Long
-
 type Query {
     # A simple query returning a greeting string.
     hello: String!
@@ -42,7 +40,7 @@ type Mutation {
 
 input CartUpdateInput {
     productId: ID
-    cartItemId: Long
+    cartItemId: Int
     quantity: Int
     action: CartUpdateAction!
 }
@@ -80,7 +78,7 @@ type CartItemEdge {
 }
 
 type CartItem {
-    id: Long!
+    id: Int!
     product: Product
     quantity: Int!
     itemPrice: String!

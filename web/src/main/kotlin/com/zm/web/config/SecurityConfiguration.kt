@@ -1,5 +1,6 @@
 package com.zm.web.config
 
+import com.zm.web.handler.JwtAuthenticationEntryPoint
 import com.zm.web.filter.JwtAuthenticationFilter
 import com.zm.web.service.JwtUserDetailService
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
@@ -31,7 +32,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 )
 @Configuration
 class SecurityConfiguration(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
 ) {
     
     companion object {
@@ -61,6 +63,8 @@ class SecurityConfiguration(
                 .requestMatchers(*UNAUTHORIZED_ROUTE).permitAll()
                 // Require authentication for any other request
                 .anyRequest().authenticated()
+        }.exceptionHandling {
+            exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
         }
 
         // Configure remember-me functionality
