@@ -1,30 +1,10 @@
 type Query {
-    # A simple query returning a greeting string.
     hello: String!
 
-    # Retrieves a list of all posts.
-    getPosts: [Post]!
-
-    # Retrieves a list of recent posts with pagination support.
-    recentPosts(limit: Int!, offset: Int!): [Post]!
-
-    # ----- App usage start from this line -----
-
-    # Retrieves a paginated list of cart items.
-    # Returns a CartItemConnection object representing a paginated list of CartItem objects.
-    # Each CartItem object contains information about a product in the cart.
-    listCartItems(page: Int!, size: Int!): CartItemConnection!
-
-    # ----- App usage end from this line -----
+    cart(id: ID!, currency: CurrencyInput!): Cart
 }
 
 type Mutation {
-    createPost(
-        title: String!,
-        description: String!
-    ): Post!
-
-    # ----- App usage start from this line -----
     addToCart(
         productId: ID!
         quantity: Int!
@@ -35,7 +15,6 @@ type Mutation {
     updateCart(
         cartUpdates: [CartUpdateInput!]!
     ): [CartItem!]!
-    # ----- App usage end from this line -----
 }
 
 input CartUpdateInput {
@@ -51,14 +30,6 @@ enum CartUpdateAction {
     REMOVE
     CLEAR
 }
-
-type Post {
-    id: ID!
-    title: String!
-    description: String
-}
-
-# ----- App usage start from this line -----
 
 type CartItemConnection {
     pageInfo: PageInfo!
@@ -90,5 +61,3 @@ type Product {
     price: String!
     description: String
 }
-
-# ----- App usage end from this line -----

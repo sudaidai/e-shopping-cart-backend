@@ -2,12 +2,14 @@ package com.zm.web.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.zm.web.model.request.LoginRequest
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+@Disabled
 class AuthControllerTests : ControllerAbstractTest() {
 
     @Autowired

@@ -9,15 +9,19 @@ import java.util.*
 // data before class indicates that this class is a data class, providing additional functionality.
 // The @Entity annotation is from JPA (Java Persistence API) and is used to mark this class as an entity.
 @Entity
-@Table(name = "cart_item",
+@Table(name = "item",
     uniqueConstraints = [UniqueConstraint(columnNames = ["member_id", "product_id"])])
-data class CartItem(
+data class Item(
 
     // The @Id annotation marks this property as the primary key of the entity.
     // @GeneratedValue specifies the strategy for generating the values of the primary key.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    var cart: Cart? = null,
 
     // The @ManyToOne annotation denotes a many-to-one relationship with the Member entity.
     // @JoinColumn specifies the name of the column used for the mapping.
@@ -31,7 +35,9 @@ data class CartItem(
     var product: Product? = null,
 
     // The quantity of the product in the cart.
-    var quantity: Int = 0
+    var quantity: Int = 0,
+
+    var images: String? = null
 ) {
     // This function calculates and returns the item price using BigDecimal arithmetic.
     fun getItemPrice(): BigDecimal {
