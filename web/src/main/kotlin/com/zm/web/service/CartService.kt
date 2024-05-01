@@ -16,7 +16,7 @@ class CartService(
 ) {
 
     fun queryCart(id: UUID, currencyInput: CurrencyInput): CartResponse {
-        val cart = cartRepository.findById(id).orElseThrow {
+        val cart = cartRepository.findByUuid(id).orElseThrow {
             NoSuchElementException("Cart with ID $id not found")
         }
 
@@ -30,7 +30,7 @@ class CartService(
         val grandTotal = subTotal.add(shippingTotal).add(taxTotal)
 
         return CartResponse(
-            id = cart.id!!,
+            id = cart.uuid!!,
             email = cart.member?.email ?: "",
             isEmpty = cart.cartItems.isEmpty(),
             abandoned = cart.isAbandoned,

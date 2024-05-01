@@ -4,6 +4,7 @@ import com.zm.web.constant.ProductStatus
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.Type
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
@@ -13,13 +14,11 @@ import java.util.*
 data class Product(
 
     @Id
-    @GeneratedValue
-    @GenericGenerator(
-        name = "UUID",
-        strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Column(columnDefinition = "BINARY(16)")
-    var id: UUID? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
+    @Column(unique = true, columnDefinition = "BINARY(16)")
+    var uuid: UUID? = null,
 
     @Column(unique = true, length = 50)
     var name: String? = null,
@@ -46,8 +45,8 @@ data class Product(
 ) {
     @PrePersist
     fun prePersist() {
-        if (id == null) {
-            id = UUID.randomUUID()
+        if (uuid == null) {
+            uuid = UUID.randomUUID()
         }
         updateTime = createTime
     }

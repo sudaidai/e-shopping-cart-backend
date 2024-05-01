@@ -1,9 +1,7 @@
 package com.zm.web.repository.data
 
-import com.zm.web.constant.Currency
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
-import org.hibernate.annotations.GenericGenerator
 import java.time.Instant
 import java.util.*
 
@@ -11,13 +9,11 @@ import java.util.*
 @Table(name = "cart")
 class Cart (
     @Id
-    @GeneratedValue
-    @GenericGenerator(
-        name = "UUID",
-        strategy = "org.hibernate.id.UUIDGenerator"
-    )
-    @Column(columnDefinition = "BINARY(16)")
-    var id: UUID? = null,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null,
+
+    @Column(unique = true, columnDefinition = "BINARY(16)")
+    var uuid: UUID? = null,
 
     @OneToOne
     @JoinColumn(name = "member_id")
@@ -38,6 +34,15 @@ class Cart (
     @Temporal(TemporalType.TIMESTAMP)
     var updateTime: Instant? = null
 ) {
+
+    @PrePersist
+    fun prePersist() {
+        if (uuid == null) {
+            uuid = UUID.randomUUID()
+        }
+        updateTime = createTime
+    }
+
     @PreUpdate
     fun preUpdate() {
         updateTime = Instant.now()

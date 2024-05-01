@@ -5,6 +5,7 @@ import com.zm.web.model.ProductDTO
 import com.zm.web.model.fromProduct
 import com.zm.web.repository.ItemRepository
 import com.zm.web.repository.ProductRepository
+import com.zm.web.repository.data.Cart
 import com.zm.web.serializer.CustomSerializer
 import com.zm.web.service.MemberService
 import org.springframework.http.HttpStatus
@@ -27,8 +28,8 @@ class HomeController (
         return try {
             val member = memberService.getCurrentMember()
             val products = productRepository.findAll().map { fromProduct(it) }
-            val cartId = member?.cart?.id
-            val itemsCount = cartId?.let { itemRepository.countItemsInCart(it) } ?: 0
+            val cartId = member?.cart?.uuid
+            val itemsCount = member?.cart?.id?.let { itemRepository.findByCart(Cart(id = it)) } ?: 0
             val memberName = member?.name ?: "Guest"
             val isCartEmpty = itemsCount == 0
 
