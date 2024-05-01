@@ -1,10 +1,9 @@
 package com.zm.web.model.response
 
 import java.math.BigDecimal
-import java.util.UUID
 
 data class CartResponse(
-    val id: UUID,
+    val id: String,
     val email: String?,
     val isEmpty: Boolean,
     val abandoned: Boolean,
@@ -23,7 +22,7 @@ data class CartResponse(
 )
 
 data class ItemDTO(
-    val id: Long,
+    val id: String,
     val name: String,
     val description: String?,
     val images: List<String>,

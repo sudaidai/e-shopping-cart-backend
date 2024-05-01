@@ -65,7 +65,7 @@ data class Item(
         val itemPrice = getItemPrice()
 
         return ItemDTO(
-            id = this.id!!,
+            id = this.id!!.toString(),
             name = product?.name ?: "Unknown Product",
             description = product?.description,
             images = images?.split(",") ?: listOf(),

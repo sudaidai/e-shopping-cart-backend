@@ -1,22 +1,23 @@
 package com.zm.web.service
 
-import com.zm.web.constant .Currency
+import com.zm.web.constant.Currency
 import com.zm.web.exception.BusinessException
-import com.zm.web.model.response.*
+import com.zm.web.model.response.CartResponse
+import com.zm.web.model.response.CurrencyDTO
+import com.zm.web.model.response.PriceDTO
 import com.zm.web.repository.CartRepository
 import com.zm.web.repository.data.Item
 import com.zm.web.resolver.CurrencyInput
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
-import java.util.UUID
 
 @Service
 class CartService(
     private val cartRepository: CartRepository
 ) {
 
-    fun queryCart(id: UUID, currencyInput: CurrencyInput): CartResponse {
-        val cart = cartRepository.findByUuid(id).orElseThrow {
+    fun queryCart(id: String, currencyInput: CurrencyInput): CartResponse {
+        val cart = cartRepository.findById(id.toLong()).orElseThrow {
             NoSuchElementException("Cart with ID $id not found")
         }
 
@@ -30,7 +31,7 @@ class CartService(
         val grandTotal = subTotal.add(shippingTotal).add(taxTotal)
 
         return CartResponse(
-            id = cart.uuid!!,
+            id = cart.id!!.toString(),
             email = cart.member?.email ?: "",
             isEmpty = cart.cartItems.isEmpty(),
             abandoned = cart.isAbandoned,

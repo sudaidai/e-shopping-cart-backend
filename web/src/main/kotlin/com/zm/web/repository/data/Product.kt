@@ -17,9 +17,6 @@ data class Product(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @Column(unique = true, columnDefinition = "BINARY(16)")
-    var uuid: UUID? = null,
-
     @Column(unique = true, length = 50)
     var name: String? = null,
 
@@ -43,14 +40,6 @@ data class Product(
 
     var listedTime: Instant? = null
 ) {
-    @PrePersist
-    fun prePersist() {
-        if (uuid == null) {
-            uuid = UUID.randomUUID()
-        }
-        updateTime = createTime
-    }
-
     @PreUpdate
     fun preUpdate() {
         updateTime = Instant.now()

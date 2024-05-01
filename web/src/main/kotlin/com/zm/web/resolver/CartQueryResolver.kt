@@ -5,7 +5,6 @@ import com.zm.web.service.CartService
 import org.springframework.graphql.data.method.annotation.Argument
 import org.springframework.graphql.data.method.annotation.QueryMapping
 import org.springframework.stereotype.Controller
-import java.util.*
 
 @Controller
 class CartQueryResolver(
@@ -14,7 +13,7 @@ class CartQueryResolver(
 
     @QueryMapping
     fun cart(
-        @Argument id: UUID,
+        @Argument id: String,
         @Argument("currency") currencyInput: CurrencyInput
     ): CartResponse {
         return cartService.queryCart(id, currencyInput)

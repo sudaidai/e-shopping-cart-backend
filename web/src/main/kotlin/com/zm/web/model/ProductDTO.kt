@@ -5,7 +5,7 @@ import java.math.BigDecimal
 import java.util.*
 
 data class ProductDTO(
-    val id: UUID,
+    val id: String,
     val name: String,
     val price: BigDecimal,
     val description: String,
@@ -14,7 +14,7 @@ data class ProductDTO(
 
 fun fromProduct(product: Product): ProductDTO {
     return ProductDTO(
-        id = product.uuid ?: throw IllegalArgumentException("Product ID cannot be null"),
+        id = product.id.toString(),
         name = product.name ?: throw IllegalArgumentException("Product name cannot be null"),
         price = product.price ?: BigDecimal.ZERO,
         description = product.description ?: "",

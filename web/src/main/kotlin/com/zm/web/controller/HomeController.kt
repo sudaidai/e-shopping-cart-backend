@@ -28,7 +28,7 @@ class HomeController (
         return try {
             val member = memberService.getCurrentMember()
             val products = productRepository.findAll().map { fromProduct(it) }
-            val cartId = member?.cart?.uuid
+            val cartId = member?.cart?.id
             val itemsCount = member?.cart?.id?.let { itemRepository.findByCart(Cart(id = it)) } ?: 0
             val memberName = member?.name ?: "Guest"
             val isCartEmpty = itemsCount == 0
@@ -50,7 +50,7 @@ class HomeController (
 data class HomeResponse(
     val name: String,
     val products: List<ProductDTO>,
-    val cartId: UUID?,
+    val cartId: Long?,
     val itemsCount: Int,
     val isCartEmpty: Boolean
 )

@@ -12,9 +12,6 @@ class Cart (
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
-    @Column(unique = true, columnDefinition = "BINARY(16)")
-    var uuid: UUID? = null,
-
     @OneToOne
     @JoinColumn(name = "member_id")
     var member: Member? = null,
@@ -34,15 +31,6 @@ class Cart (
     @Temporal(TemporalType.TIMESTAMP)
     var updateTime: Instant? = null
 ) {
-
-    @PrePersist
-    fun prePersist() {
-        if (uuid == null) {
-            uuid = UUID.randomUUID()
-        }
-        updateTime = createTime
-    }
-
     @PreUpdate
     fun preUpdate() {
         updateTime = Instant.now()
