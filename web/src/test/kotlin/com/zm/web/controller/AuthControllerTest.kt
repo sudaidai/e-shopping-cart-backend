@@ -9,7 +9,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@Disabled
+//@Disabled
 class AuthControllerTests : ControllerAbstractTest() {
 
     @Autowired

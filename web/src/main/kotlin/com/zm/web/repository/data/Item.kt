@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
 import jakarta.persistence.Temporal
 import jakarta.persistence.TemporalType
@@ -51,8 +52,6 @@ data class Item(
     // The quantity of the product in the cart.
     var quantity: Int = 0,
 
-    var images: String? = null,
-
     @Column(nullable = false, updatable = false)
     @CreationTimestamp
     var createTime: Instant? = null,
@@ -60,6 +59,11 @@ data class Item(
     @Temporal(TemporalType.TIMESTAMP)
     var updateTime: Instant? = null
 ) {
+    @PreUpdate
+    fun preUpdate() {
+        updateTime = Instant.now()
+    }
+
     fun toItemDTO(currency: Currency): ItemDTO {
         val productPrice = getProductPrice()
         val itemPrice = getItemPrice()
@@ -68,7 +72,7 @@ data class Item(
             id = this.id!!.toString(),
             name = product?.name ?: "Unknown Product",
             description = product?.description,
-            images = images?.split(",") ?: listOf(),
+            images = product?.images?.split(",") ?: listOf(),
             quantity = quantity,
             attributes = listOf(),
             unitTotal = PriceDTO(productPrice, currency.getSymbol() + productPrice),

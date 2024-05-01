@@ -13,13 +13,9 @@ class CartQueryResolver(
 
     @QueryMapping
     fun cart(
-        @Argument id: String,
-        @Argument("currency") currencyInput: CurrencyInput
+        @Argument id: String
     ): CartResponse {
-        return cartService.queryCart(id, currencyInput)
+        return cartService.queryCart(id)
     }
 }
 
-data class CurrencyInput(
-    val code: String
-)

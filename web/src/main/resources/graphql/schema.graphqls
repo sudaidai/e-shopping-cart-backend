@@ -1,11 +1,13 @@
 type Query {
   hello: String!
 
-  cart(id: ID!, currency: CurrencyInput!): Cart
+  cart(id: ID!): Cart
 }
 
-input CurrencyInput {
-  code: String!
+type Mutation {
+  addItemToCart(productId: ID!, quantity: Int!): Cart
+  updateCartItem(cartItemId: ID!, quantity: Int!): Cart
+  removeCartItem(cartItemId: ID!): Cart
 }
 
 type Cart {

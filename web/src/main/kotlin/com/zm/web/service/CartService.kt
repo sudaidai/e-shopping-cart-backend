@@ -1,53 +1,50 @@
 package com.zm.web.service
 
-import com.zm.web.constant.Currency
 import com.zm.web.exception.BusinessException
 import com.zm.web.model.response.CartResponse
-import com.zm.web.model.response.CurrencyDTO
-import com.zm.web.model.response.PriceDTO
 import com.zm.web.repository.CartRepository
+import com.zm.web.repository.data.Cart
 import com.zm.web.repository.data.Item
-import com.zm.web.resolver.CurrencyInput
+import com.zm.web.repository.data.Product
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
 @Service
 class CartService(
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
+    private val memberService: MemberService
 ) {
 
-    fun queryCart(id: String, currencyInput: CurrencyInput): CartResponse {
+    fun queryCart(id: String): CartResponse {
         val cart = cartRepository.findById(id.toLong()).orElseThrow {
             NoSuchElementException("Cart with ID $id not found")
         }
 
-        val codeInput = currencyInput.code
-        val currency = Currency.fromCode(codeInput) ?:
-            throw BusinessException("Currency not supported with code $codeInput")
+        return prepareCartResponse(cart)
+    }
 
+    fun addItemToCart(productId: String, quantity: Int): CartResponse {
+        val member = memberService.getCurrentMember()
+            ?: throw BusinessException("Unauthorized")
+
+        var cart = cartRepository.findByMember(member) ?: Cart(member = member).also {
+            cartRepository.save(it)
+        }
+
+        cart.cartItems.add(Item(cart = cart, member = member, product = Product(productId.toLong()), quantity = quantity))
+        cart = cartRepository.save(cart)
+        return prepareCartResponse(cart)
+
+    }
+
+    private fun prepareCartResponse(cart: Cart): CartResponse {
+        val currency = cart.currency!!
         val subTotal = calculateSubTotal(cart.cartItems)
         val shippingTotal = calculateShippingTotal(cart.cartItems)
         val taxTotal = calculateTaxTotal(subTotal)
-        val grandTotal = subTotal.add(shippingTotal).add(taxTotal)
+        val grandTotal = subTotal + shippingTotal + taxTotal
 
-        return CartResponse(
-            id = cart.id!!.toString(),
-            email = cart.member?.email ?: "",
-            isEmpty = cart.cartItems.isEmpty(),
-            abandoned = cart.isAbandoned,
-            totalItems = cart.cartItems.sumOf { it.quantity },
-            totalUniqueItems = cart.cartItems.size,
-            currency = CurrencyDTO(currency.name, currency.getSymbol()),
-            subTotal = PriceDTO(subTotal, currency.getSymbol() + subTotal.toPlainString()),
-            shippingTotal = PriceDTO(shippingTotal, currency.getSymbol() + shippingTotal.toPlainString()),
-            taxTotal = PriceDTO(taxTotal, currency.getSymbol() + taxTotal.toPlainString()),
-            grandTotal = PriceDTO(grandTotal, currency.getSymbol() + grandTotal.toPlainString()),
-            attributes = listOf(),
-            notes = cart.notes,
-            createdAt = cart.createTime?.toString() ?: "",
-            updatedAt = cart.updateTime?.toString() ?: "",
-            items = cart.cartItems.map { it.toItemDTO(currency) }
-        )
+        return cart.toCartResponse(currency, subTotal, shippingTotal, taxTotal, grandTotal)
     }
 
     private fun calculateSubTotal(items: List<Item>): BigDecimal {
