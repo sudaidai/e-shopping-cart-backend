@@ -1,10 +1,24 @@
 package com.zm.web.repository.data
 
-import com.zm.web.model.ProductDTO
-import com.zm.web.model.response.CartItemResponse
-import jakarta.persistence.*
+import com.zm.web.constant.Currency
+import com.zm.web.model.response.ItemDTO
+import com.zm.web.model.response.PriceDTO
+import com.zm.web.utils.TimeUtils
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
+import jakarta.persistence.Temporal
+import jakarta.persistence.TemporalType
+import jakarta.persistence.UniqueConstraint
+import org.hibernate.annotations.CreationTimestamp
 import java.math.BigDecimal
-import java.util.*
+import java.time.Instant
 
 // data before class indicates that this class is a data class, providing additional functionality.
 // The @Entity annotation is from JPA (Java Persistence API) and is used to mark this class as an entity.
@@ -37,8 +51,33 @@ data class Item(
     // The quantity of the product in the cart.
     var quantity: Int = 0,
 
-    var images: String? = null
+    var images: String? = null,
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    var createTime: Instant? = null,
+
+    @Temporal(TemporalType.TIMESTAMP)
+    var updateTime: Instant? = null
 ) {
+    fun toItemDTO(currency: Currency): ItemDTO {
+        val productPrice = getProductPrice()
+        val itemPrice = getItemPrice()
+
+        return ItemDTO(
+            id = this.id!!,
+            name = product?.name ?: "Unknown Product",
+            description = product?.description,
+            images = images?.split(",") ?: listOf(),
+            quantity = quantity,
+            attributes = listOf(),
+            unitTotal = PriceDTO(productPrice, currency.getSymbol() + productPrice),
+            lineTotal = PriceDTO(itemPrice, currency.getSymbol() + itemPrice),
+            createdAt = TimeUtils.formatInstant(createTime),
+            updatedAt = TimeUtils.formatInstant(updateTime)
+        )
+    }
+
     // This function calculates and returns the item price using BigDecimal arithmetic.
     fun getItemPrice(): BigDecimal {
         // Create a BigDecimal instance representing the quantity of the product.
@@ -63,20 +102,8 @@ data class Item(
         this.quantity = if (reducedQuantity >= 0) reducedQuantity else 0
     }
 
-    fun toCartItemResponse(): CartItemResponse {
-        val itemPrice = this.getItemPrice().toString()
-        val graphqlProduct = ProductDTO(
-            id = this.product?.id ?: UUID.randomUUID(),
-            name = this.product?.name ?: "",
-            price = this.product?.price?.toString() ?: "0",
-            description = this.product?.description ?: ""
-        )
-        return CartItemResponse(
-            id = this.id!!.toInt(),
-            product = graphqlProduct,
-            quantity = this.quantity,
-            itemPrice = itemPrice
-        )
+    private fun getProductPrice(): BigDecimal{
+        return product?.price ?: BigDecimal.ZERO
     }
 }
 

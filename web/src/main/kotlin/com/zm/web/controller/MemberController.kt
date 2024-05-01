@@ -29,7 +29,8 @@ class MemberController(
         // Encrypt the password before saving it to the database
         val member = Member(
             account = registrationRequest.account,
-            password = passwordEncoder.encode(registrationRequest.password) // Encoding password
+            password = passwordEncoder.encode(registrationRequest.password), // Encoding password
+            name = registrationRequest.name
         )
 
         // Save the member using the injected memberRepository

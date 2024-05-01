@@ -1,74 +1,66 @@
 package com.zm.web.service
 
-import com.zm.web.constant.CartAction
-import com.zm.web.model.request.CartItemUpdateRequest
-import com.zm.web.model.response.CartItemResponse
-import com.zm.web.repository.ItemRepository
+import com.zm.web.constant .Currency
+import com.zm.web.exception.BusinessException
+import com.zm.web.model.response.*
+import com.zm.web.repository.CartRepository
 import com.zm.web.repository.data.Item
-import com.zm.web.repository.data.Member
-import com.zm.web.repository.data.Product
-import com.zm.web.utils.SecurityUtils
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.PageRequest
+import com.zm.web.resolver.CurrencyInput
 import org.springframework.stereotype.Service
-import java.util.*
+import java.math.BigDecimal
+import java.util.UUID
 
 @Service
 class CartService(
-    private val itemRepository: ItemRepository,
-    private val memberService: MemberService
+    private val cartRepository: CartRepository
 ) {
 
-    fun listCartItems(page: Int, size: Int): Page<CartItemResponse> =
-        itemRepository.findByMember(
-            Member(account = SecurityUtils.getCurrentUser()), PageRequest.of(page, size)
-        ).map { it.toCartItemResponse() }
-
-    fun addToCart(productId: UUID, quantity: Int): CartItemResponse {
-        val member = memberService.getCurrentMember()
-        val item = Item(
-            member = Member(id = member.id),
-            product = Product(id = productId),
-            quantity = quantity
-        )
-        return itemRepository.save(item).toCartItemResponse()
-    }
-
-    fun clearCart(): Boolean {
-        val member = memberService.getCurrentMember()
-        return itemRepository.deleteByMember(Member(id = member.id)) > 0
-    }
-
-    fun updateCart(updateCartRequest: List<CartItemUpdateRequest>): List<CartItemResponse> {
-        val member = memberService.getCurrentMember()
-
-        return updateCartRequest.mapNotNull { updateCartItem ->
-            when (updateCartItem.action) {
-                CartAction.ADD -> updateCartItem.quantity?.let {
-                    val item = Item(
-                        member = Member(id = member.id),
-                        product = Product(id = updateCartItem.productId),
-                        quantity = it
-                    )
-                    itemRepository.save(item).toCartItemResponse()
-                }
-                CartAction.UPDATE -> {
-                    updateCartItem.cartItemId?.let { cartItemId ->
-                        itemRepository.findById(cartItemId).orElse(null)?.let { existingCartItem ->
-                            existingCartItem.quantity = updateCartItem.quantity!!
-                            itemRepository.save(existingCartItem).toCartItemResponse()
-                        }
-                    }
-                }
-                CartAction.REMOVE -> {
-                    updateCartItem.cartItemId?.let { itemRepository.deleteById(it) }
-                    null
-                }
-                CartAction.CLEAR -> {
-                    itemRepository.deleteByMember(Member(id = member.id))
-                    null
-                }
-            }
+    fun queryCart(id: UUID, currencyInput: CurrencyInput): CartResponse {
+        val cart = cartRepository.findById(id).orElseThrow {
+            NoSuchElementException("Cart with ID $id not found")
         }
+
+        val codeInput = currencyInput.code
+        val currency = Currency.fromCode(codeInput) ?:
+            throw BusinessException("Currency not supported with code $codeInput")
+
+        val subTotal = calculateSubTotal(cart.cartItems)
+        val shippingTotal = calculateShippingTotal(cart.cartItems)
+        val taxTotal = calculateTaxTotal(subTotal)
+        val grandTotal = subTotal.add(shippingTotal).add(taxTotal)
+
+        return CartResponse(
+            id = cart.id!!,
+            email = cart.member?.email ?: "",
+            isEmpty = cart.cartItems.isEmpty(),
+            abandoned = cart.isAbandoned,
+            totalItems = cart.cartItems.sumOf { it.quantity },
+            totalUniqueItems = cart.cartItems.size,
+            currency = CurrencyDTO(currency.name, currency.getSymbol()),
+            subTotal = PriceDTO(subTotal, currency.getSymbol() + subTotal.toPlainString()),
+            shippingTotal = PriceDTO(shippingTotal, currency.getSymbol() + shippingTotal.toPlainString()),
+            taxTotal = PriceDTO(taxTotal, currency.getSymbol() + taxTotal.toPlainString()),
+            grandTotal = PriceDTO(grandTotal, currency.getSymbol() + grandTotal.toPlainString()),
+            attributes = listOf(),
+            notes = cart.notes,
+            createdAt = cart.createTime?.toString() ?: "",
+            updatedAt = cart.updateTime?.toString() ?: "",
+            items = cart.cartItems.map { it.toItemDTO(currency) }
+        )
+    }
+
+    private fun calculateSubTotal(items: List<Item>): BigDecimal {
+        return items.sumOf { item ->
+            val price = item.product?.price ?: BigDecimal.ZERO
+            price.multiply(BigDecimal(item.quantity))
+        }
+    }
+
+    private fun calculateShippingTotal(items: List<Item>): BigDecimal {
+        return BigDecimal(items.size)
+    }
+
+    private fun calculateTaxTotal(subTotal: BigDecimal): BigDecimal {
+        return subTotal.multiply(BigDecimal(0.1))
     }
 }

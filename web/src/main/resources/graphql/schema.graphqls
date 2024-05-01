@@ -1,63 +1,56 @@
 type Query {
-    hello: String!
+  hello: String!
 
-    cart(id: ID!, currency: CurrencyInput!): Cart
+  cart(id: ID!, currency: CurrencyInput!): Cart
 }
 
-type Mutation {
-    addToCart(
-        productId: ID!
-        quantity: Int!
-    ): CartItem!
-
-    clearCart: Boolean!
-
-    updateCart(
-        cartUpdates: [CartUpdateInput!]!
-    ): [CartItem!]!
+input CurrencyInput {
+  code: String!
 }
 
-input CartUpdateInput {
-    productId: ID
-    cartItemId: Int
-    quantity: Int
-    action: CartUpdateAction!
-}
-
-enum CartUpdateAction {
-    ADD
-    UPDATE
-    REMOVE
-    CLEAR
-}
-
-type CartItemConnection {
-    pageInfo: PageInfo!
-    edges: [CartItemEdge!]!
-}
-
-type PageInfo {
-    hasNextPage: Boolean!
-    hasPreviousPage: Boolean!
-    startCursor: String
-    endCursor: String
-}
-
-type CartItemEdge {
-    cursor: String!
-    node: CartItem!
+type Cart {
+  id: ID!
+  email: String
+  isEmpty: Boolean!
+  abandoned: Boolean!
+  totalItems: Int!
+  totalUniqueItems: Int!
+  currency: Currency!
+  subTotal: Price!
+  shippingTotal: Price!
+  taxTotal: Price!
+  grandTotal: Price!
+  attributes: [Attribute!]!
+  notes: String
+  createdAt: String
+  updatedAt: String
+  items: [CartItem!]!
 }
 
 type CartItem {
-    id: Int!
-    product: Product
-    quantity: Int!
-    itemPrice: String!
+  id: ID!
+  name: String
+  description: String
+  images: [String]
+  quantity: Int!
+  attributes: [Attribute!]!
+  unitTotal: Price!
+  lineTotal: Price!
+  createdAt: String
+  updatedAt: String
 }
 
-type Product {
-    id: ID!
-    name: String!
-    price: String!
-    description: String
+type Currency {
+  code: String!
+  symbol: String
+}
+
+type Price {
+  amount: Float!
+  formatted: String
+}
+
+type Attribute {
+  key: String!
+  value: String
 }

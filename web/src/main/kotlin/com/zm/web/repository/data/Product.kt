@@ -28,6 +28,8 @@ data class Product(
 
     var description: String? = null,
 
+    var images: String? = null,
+
     @Enumerated(EnumType.STRING)
     var status: ProductStatus? = null,
 

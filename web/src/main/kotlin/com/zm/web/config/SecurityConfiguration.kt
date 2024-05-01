@@ -44,7 +44,8 @@ class SecurityConfiguration(
             "/v3/api-docs/swagger-config",
             "/swagger-ui/**",
             "/api/auth",
-            "/api/member"
+            "/api/member",
+            "/api/home"
         )
     }
 

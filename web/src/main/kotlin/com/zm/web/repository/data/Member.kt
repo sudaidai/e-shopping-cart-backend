@@ -14,6 +14,8 @@ data class Member(
     @Column(unique = true, nullable = false)
     var account: String? = null,
 
+    var email: String? = null,
+
     @Column(nullable = false)
     var password: String? = null,
 
@@ -24,6 +26,13 @@ data class Member(
     var address: String? = null,
 
     var phone: String? = null,
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id")
+    var cart: Cart? = null,
+
+    @Column(name = "cart_id", insertable = false, updatable = false)
+    var cartId: Long? = null,
 
     @Column(nullable = true)
     var isDelete: Boolean? = false,

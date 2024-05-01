@@ -6,7 +6,7 @@ package com.zm.web.constant;
  */
 enum class Currency(
     private val countryName: String,
-    private val code: Int,
+    private val num: Int,
     private val symbol: String,
     private val decimalPrecision: Int
 ) {
@@ -23,6 +23,24 @@ enum class Currency(
     NZD("New Zealand", 554, "$", 2);
 
     override fun toString(): String {
-        return "$countryName uses $name($symbol) as currency, D: $decimalPrecision, Num: $code"
+        return "$countryName uses $name($symbol) as currency, D: $decimalPrecision, Num: $num"
+    }
+
+    fun getSymbol(): String = symbol
+
+    fun getNum(): Int = num
+
+    fun getCountryName(): String = countryName
+
+    fun getDecimalPrecision(): Int = decimalPrecision
+
+    companion object {
+        fun fromCode(code: String): Currency? {
+            return try {
+                enumValueOf<Currency>(code)
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+        }
     }
 }
