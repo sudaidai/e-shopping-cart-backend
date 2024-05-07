@@ -2,7 +2,6 @@ package com.zm.web.model
 
 import com.zm.web.repository.data.Product
 import java.math.BigDecimal
-import java.util.*
 
 data class ProductDTO(
     val id: String,
@@ -12,13 +11,15 @@ data class ProductDTO(
     val images: List<String>
 )
 
-fun fromProduct(product: Product): ProductDTO {
+fun fromProduct(product: Product, baseUrl: String): ProductDTO {
+    val imagePaths = product.images?.split(",")?.map { "$baseUrl${it.trim()}" } ?: emptyList()
+
     return ProductDTO(
         id = product.id.toString(),
         name = product.name ?: throw IllegalArgumentException("Product name cannot be null"),
         price = product.price ?: BigDecimal.ZERO,
         description = product.description ?: "",
-        images = product.images?.split(",")?.map(String::trim) ?: emptyList()
+        images = imagePaths
     )
 }
 
