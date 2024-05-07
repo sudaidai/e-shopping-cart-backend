@@ -4,9 +4,11 @@ import com.zm.web.model.ProductDTO
 import com.zm.web.model.fromProduct
 import com.zm.web.repository.ProductRepository
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@RestController("/api/product")
+@RestController
+@RequestMapping("/api/product")
 class ProductController (
     private val productRepository: ProductRepository
 ){
