@@ -6,6 +6,7 @@ import com.zm.web.repository.ItemRepository
 import com.zm.web.repository.ProductRepository
 import com.zm.web.repository.data.Cart
 import com.zm.web.service.MemberService
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -21,9 +22,10 @@ class HomeController(
 ) {
 
     @GetMapping
-    fun home(): ResponseEntity<HomeResponse> {
+    fun home(request: HttpServletRequest): ResponseEntity<HomeResponse> {
+        val baseUrl = "${request.scheme}://${request.serverName}:${request.serverPort}/"
         val member = memberService.getCurrentMember()
-        val products = productRepository.findAll().map { fromProduct(it) }
+        val products = productRepository.findAll().map { fromProduct(it, baseUrl) }
         val cartId = member?.cart?.id
         val itemsCount = member?.cart?.id?.let { itemRepository.findByCart(Cart(id = it)) } ?: 0
         val memberName = member?.name ?: "Guest"
