@@ -27,7 +27,7 @@ class HomeController(
         val member = memberService.getCurrentMember()
         val products = productRepository.findAll().map { fromProduct(it, baseUrl) }
         val cartId = member?.cart?.id
-        val itemsCount = member?.cart?.id?.let { itemRepository.findByCart(Cart(id = it)) } ?: 0
+        val itemsCount = member?.cart?.id?.let { itemRepository.countByCart(Cart(id = it)) } ?: 0
         val memberName = member?.name ?: "Guest"
         val isCartEmpty = itemsCount == 0
 
