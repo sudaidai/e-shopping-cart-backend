@@ -15,8 +15,7 @@ import java.math.BigDecimal
 @Service
 class CartService(
     private val cartRepository: CartRepository,
-    private val memberService: MemberService,
-    private val itemRepository: ItemRepository
+    private val memberService: MemberService
 ) {
 
     fun queryCart(id: String): CartResponse {
@@ -45,22 +44,17 @@ class CartService(
         val member = memberService.getCurrentMember()
             ?: throw BusinessException("Unauthorized")
 
-        val cart = cartRepository.findByMember(member)
+        var cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist. Unable to update cart")
 
-        val itemList = itemRepository.findByCart(cart)
-
-        for (i in itemList.indices) {
-            if (itemList[i].id == cartItemId.toLong()) {
-                val updateItem: Item = itemList[i]
-                updateItem.quantity += quantity
-                itemRepository.save(updateItem)
+        for (i in cart.cartItems.indices) {
+            if (cart.cartItems[i].id == cartItemId.toLong()) {
+                cart.cartItems[i].quantity += quantity
+                cart = cartRepository.save(cart)
             }
         }
 
-        val newCart = cartRepository.findByMember(member)
-
-        return prepareCartResponse(newCart!!)
+        return prepareCartResponse(cart)
     }
 
     private fun prepareCartResponse(cart: Cart): CartResponse {
