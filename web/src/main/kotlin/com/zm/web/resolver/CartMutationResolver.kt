@@ -17,4 +17,12 @@ class CartMutationResolver(
     ): CartResponse {
         return cartService.addItemToCart(productId, quantity)
     }
+
+    @MutationMapping
+    fun updateCartItem(
+        @Argument cartItemId: String,
+        @Argument quantity: Int
+    ): CartResponse {
+        return cartService.updateCartItem(cartItemId, quantity)
+    }
 }

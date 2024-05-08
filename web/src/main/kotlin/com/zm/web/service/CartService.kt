@@ -3,16 +3,20 @@ package com.zm.web.service
 import com.zm.web.exception.BusinessException
 import com.zm.web.model.response.CartResponse
 import com.zm.web.repository.CartRepository
+import com.zm.web.repository.ItemRepository
 import com.zm.web.repository.data.Cart
 import com.zm.web.repository.data.Item
+import com.zm.web.repository.data.Member
 import com.zm.web.repository.data.Product
+import com.zm.web.utils.SecurityUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
 @Service
 class CartService(
     private val cartRepository: CartRepository,
-    private val memberService: MemberService
+    private val memberService: MemberService,
+    private val itemRepository: ItemRepository
 ) {
 
     fun queryCart(id: String): CartResponse {
@@ -34,6 +38,34 @@ class CartService(
         cart.cartItems.add(Item(cart = cart, member = member, product = Product(productId.toLong()), quantity = quantity))
         cart = cartRepository.save(cart)
         return prepareCartResponse(cart)
+
+    }
+
+    fun updateCartItem(cartItemId: String, quantity: Int): CartResponse {
+        val member = memberService.getCurrentMember()
+            ?: throw BusinessException("Unauthorized")
+
+        val cart = cartRepository.findByMember(member)
+            ?: throw BusinessException("No cart exist. Unable to update cart")
+
+        val item = itemRepository.findByCart(cart)
+
+        for ((index, value) in item.withIndex()){
+            if (value.id == cartItemId) {
+
+            }
+        }
+
+        if (item.isPresent) {
+            val updateItem: Item = item.get()
+            updateItem.quantity += quantity
+            itemRepository.save(updateItem)
+        }
+
+        val newCart = cartRepository.findByMember(member)
+
+        return prepareCartResponse(newCart!!)
+
 
     }
 

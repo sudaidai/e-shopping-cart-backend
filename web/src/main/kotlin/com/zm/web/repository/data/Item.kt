@@ -109,5 +109,9 @@ data class Item(
     private fun getProductPrice(): BigDecimal{
         return product?.price ?: BigDecimal.ZERO
     }
+
+    fun contains(cartItemId: String): Any {
+
+    }
 }
 

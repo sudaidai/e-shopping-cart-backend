@@ -19,5 +19,7 @@ interface ItemRepository : JpaRepository<Item, Long> {
 
     fun deleteByMember(member: Member): Int
 
-    fun findByCart(cart: Cart): Int
+    fun countByCart(cart: Cart): Int
+
+    fun findByCart(cart: Cart): List<Item>
 }
