@@ -48,25 +48,19 @@ class CartService(
         val cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist. Unable to update cart")
 
-        val item = itemRepository.findByCart(cart)
+        val itemList = itemRepository.findByCart(cart)
 
-        for ((index, value) in item.withIndex()){
-            if (value.id == cartItemId) {
-
+        for (i in itemList.indices) {
+            if (itemList[i].id == cartItemId.toLong()) {
+                val updateItem: Item = itemList[i]
+                updateItem.quantity += quantity
+                itemRepository.save(updateItem)
             }
-        }
-
-        if (item.isPresent) {
-            val updateItem: Item = item.get()
-            updateItem.quantity += quantity
-            itemRepository.save(updateItem)
         }
 
         val newCart = cartRepository.findByMember(member)
 
         return prepareCartResponse(newCart!!)
-
-
     }
 
     private fun prepareCartResponse(cart: Cart): CartResponse {
