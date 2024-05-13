@@ -64,12 +64,8 @@ class CartService(
         var cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist. Unable to delete item from cart")
 
-        for (i in cart.cartItems.indices) {
-            if (cart.cartItems[i].id == cartItemId.toLong()) {
-                cart.cartItems.remove(Item(cart = cart, member = member, id = cartItemId.toLong()))
-                cart = cartRepository.save(cart)
-            }
-        }
+        cart.cartItems.remove(Item(cart = cart, member = member, id = cartItemId.toLong()))
+        cart = cartRepository.save(cart)
 
         return prepareCartResponse(cart)
     }
