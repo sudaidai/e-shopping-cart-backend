@@ -1,10 +1,10 @@
 package com.zm.web.model.response
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.zm.web.model.ProductDTO
-import com.zm.web.serializer.CustomSerializer
 
-@JsonSerialize(using = CustomSerializer::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class HomeResponse(
     val name: String,
     val products: List<ProductDTO>,
