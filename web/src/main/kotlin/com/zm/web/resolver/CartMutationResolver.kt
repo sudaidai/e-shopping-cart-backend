@@ -32,4 +32,11 @@ class CartMutationResolver(
     ): CartResponse {
         return cartService.removeCartItem(cartItemId)
     }
+
+    @MutationMapping
+    fun clearCart(
+        @Argument id: String
+    ): CartResponse {
+        return cartService.clearCart()
+    }
 }

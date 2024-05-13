@@ -70,6 +70,21 @@ class CartService(
         return prepareCartResponse(cart)
     }
 
+    fun clearCart(): Boolean {
+        val member = memberService.getCurrentMember()
+            ?: throw BusinessException("Unauthorized")
+
+        var cart = cartRepository.findByMember(member)
+            ?: throw BusinessException("No cart exist.")
+
+        cart.cartItems.remove(Item(cart = cart, member = member))
+        cart.isAbandoned = true
+        cartRepository.save(cart)
+
+        return true
+
+    }
+
     private fun prepareCartResponse(cart: Cart): CartResponse {
         val currency = cart.currency!!
         val subTotal = calculateSubTotal(cart.cartItems)
