@@ -6,11 +6,11 @@ import com.zm.web.utils.SecurityUtils
 import org.springframework.stereotype.Service
 
 @Service
-class MemberService (
+class MemberService(
     private val memberRepository: MemberRepository
-){
+) {
     fun getCurrentMember(): Member? {
         val currentAccount = SecurityUtils.getCurrentUser()
-        return memberRepository.findByAccount(currentAccount) ?: null
+        return memberRepository.findByAccount(currentAccount)
     }
 }

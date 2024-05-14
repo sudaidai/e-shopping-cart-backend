@@ -1,7 +1,6 @@
 package com.zm.web.service
 
 import com.zm.web.utils.JwtTokenUtils
-import org.apache.coyote.BadRequestException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.BadCredentialsException
@@ -11,18 +10,17 @@ import org.springframework.stereotype.Service
 
 @Service
 class AuthenticationService(
-    @Value("\${jwt.key}") private val jwtKey: String = "123456",
+    @Value("\${jwt.key}") private val jwtKey: String,
     private val authManager: AuthenticationManager
 ) {
-    fun authenticate(account: String, password: String): String? {
-        try {
+    fun authenticate(account: String, password: String): String {
+        return try {
             authManager.authenticate(UsernamePasswordAuthenticationToken(account, password))
+            JwtTokenUtils.generateToken(account, emptyMap(), jwtKey)
         } catch (e: BadCredentialsException) {
             throw BadCredentialsException("INVALID_CREDENTIALS -> $account")
         } catch (e: InternalAuthenticationServiceException) {
-            throw BadRequestException("BAD_REQUEST")
+            throw IllegalArgumentException("BAD_REQUEST", e)
         }
-
-        return JwtTokenUtils.generateToken(account, emptyMap(), jwtKey)
     }
 }
