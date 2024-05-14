@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController
 
 // This annotation marks this class as a REST controller
 @RestController
-@RequestMapping("/api") // Base path for this controller
+@RequestMapping("/api/member") // Base path for this controller
 class MemberController(
     private val memberRepository: MemberRepository,
     private val passwordEncoder: PasswordEncoder // Injecting PasswordEncoder for password encryption
 ) {
 
     // This annotation maps HTTP POST requests to "/api/member" to this method
-    @PostMapping("/member")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     // @Valid ensures that the incoming request body is validated against the constraints specified in the Registration class
     fun registerMember(@Valid @RequestBody registrationRequest: RegistrationRequest) {
