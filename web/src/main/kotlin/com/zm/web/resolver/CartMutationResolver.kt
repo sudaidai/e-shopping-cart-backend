@@ -34,9 +34,7 @@ class CartMutationResolver(
     }
 
     @MutationMapping
-    fun clearCart(
-        @Argument id: String
-    ): CartResponse {
+    fun clearCart(): CartResponse {
         return cartService.clearCart()
     }
 }

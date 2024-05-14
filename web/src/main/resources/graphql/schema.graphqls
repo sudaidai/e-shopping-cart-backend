@@ -8,7 +8,7 @@ type Mutation {
   addItemToCart(productId: ID!, quantity: Int!): Cart
   updateCartItem(cartItemId: ID!, quantity: Int!): Cart
   removeCartItem(cartItemId: ID!): Cart
-  clearCart(id: ID): Boolean
+  clearCart: Cart
 }
 
 type Cart {

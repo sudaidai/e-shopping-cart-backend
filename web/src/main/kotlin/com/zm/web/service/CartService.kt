@@ -3,12 +3,9 @@ package com.zm.web.service
 import com.zm.web.exception.BusinessException
 import com.zm.web.model.response.CartResponse
 import com.zm.web.repository.CartRepository
-import com.zm.web.repository.ItemRepository
 import com.zm.web.repository.data.Cart
 import com.zm.web.repository.data.Item
-import com.zm.web.repository.data.Member
 import com.zm.web.repository.data.Product
-import com.zm.web.utils.SecurityUtils
 import org.springframework.stereotype.Service
 import java.math.BigDecimal
 
@@ -22,7 +19,6 @@ class CartService(
         val cart = cartRepository.findById(id.toLong()).orElseThrow {
             NoSuchElementException("Cart with ID $id not found")
         }
-
         return prepareCartResponse(cart)
     }
 
@@ -30,30 +26,27 @@ class CartService(
         val member = memberService.getCurrentMember()
             ?: throw BusinessException("Unauthorized")
 
-        var cart = cartRepository.findByMember(member) ?: Cart(member = member).also {
-            cartRepository.save(it)
+        val cart = cartRepository.findByMember(member) ?: Cart(member = member).apply {
+            cartRepository.save(this)
         }
 
         cart.cartItems.add(Item(cart = cart, member = member, product = Product(productId.toLong()), quantity = quantity))
-        cart = cartRepository.save(cart)
+        cartRepository.save(cart)
         return prepareCartResponse(cart)
-
     }
 
     fun updateCartItem(cartItemId: String, quantity: Int): CartResponse {
         val member = memberService.getCurrentMember()
             ?: throw BusinessException("Unauthorized")
 
-        var cart = cartRepository.findByMember(member)
+        val cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist. Unable to update cart")
 
-        for (i in cart.cartItems.indices) {
-            if (cart.cartItems[i].id == cartItemId.toLong()) {
-                cart.cartItems[i].quantity += quantity
-                cart = cartRepository.save(cart)
-            }
-        }
+        val cartItem = cart.cartItems.find { it.id == cartItemId.toLong() }
+            ?: throw BusinessException("Item not found in cart")
 
+        cartItem.quantity += quantity
+        cartRepository.save(cart)
         return prepareCartResponse(cart)
     }
 
@@ -61,32 +54,31 @@ class CartService(
         val member = memberService.getCurrentMember()
             ?: throw BusinessException("Unauthorized")
 
-        var cart = cartRepository.findByMember(member)
+        val cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist. Unable to delete item from cart")
 
-        cart.cartItems.remove(Item(cart = cart, member = member, id = cartItemId.toLong()))
-        cart = cartRepository.save(cart)
+        val cartItem = cart.cartItems.find { it.id == cartItemId.toLong() }
+            ?: throw BusinessException("Item not found in cart")
 
+        cart.cartItems.remove(cartItem)
+        cartRepository.save(cart)
         return prepareCartResponse(cart)
     }
 
-    fun clearCart(): Boolean {
+    fun clearCart(): CartResponse {
         val member = memberService.getCurrentMember()
             ?: throw BusinessException("Unauthorized")
 
-        var cart = cartRepository.findByMember(member)
+        val cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist.")
 
-        cart.cartItems.remove(Item(cart = cart, member = member))
-        cart.isAbandoned = true
+        cart.cartItems.clear()
         cartRepository.save(cart)
-
-        return true
-
+        return prepareCartResponse(cart)
     }
 
     private fun prepareCartResponse(cart: Cart): CartResponse {
-        val currency = cart.currency!!
+        val currency = cart.currency ?: throw BusinessException("Cart currency not defined")
         val subTotal = calculateSubTotal(cart.cartItems)
         val shippingTotal = calculateShippingTotal(cart.cartItems)
         val taxTotal = calculateTaxTotal(subTotal)
