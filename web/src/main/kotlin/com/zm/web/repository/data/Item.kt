@@ -24,8 +24,10 @@ import java.time.Instant
 // data before class indicates that this class is a data class, providing additional functionality.
 // The @Entity annotation is from JPA (Java Persistence API) and is used to mark this class as an entity.
 @Entity
-@Table(name = "item",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["member_id", "product_id"])])
+@Table(
+    name = "item",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["member_id", "product_id"])]
+)
 data class Item(
 
     // The @Id annotation marks this property as the primary key of the entity.
@@ -106,7 +108,7 @@ data class Item(
         this.quantity = if (reducedQuantity >= 0) reducedQuantity else 0
     }
 
-    private fun getProductPrice(): BigDecimal{
+    private fun getProductPrice(): BigDecimal {
         return product?.price ?: BigDecimal.ZERO
     }
 
@@ -119,8 +121,6 @@ data class Item(
         return true
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override fun hashCode(): Int = id.hashCode()
 }
 

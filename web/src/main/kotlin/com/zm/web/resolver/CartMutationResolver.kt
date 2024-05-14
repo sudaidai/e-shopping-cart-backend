@@ -10,31 +10,19 @@ import org.springframework.stereotype.Controller
 class CartMutationResolver(
     private val cartService: CartService
 ) {
-    @MutationMapping
-    fun addItemToCart(
-        @Argument productId: String,
-        @Argument quantity: Int
-    ): CartResponse {
-        return cartService.addItemToCart(productId, quantity)
-    }
 
     @MutationMapping
-    fun updateCartItem(
-        @Argument cartItemId: String,
-        @Argument quantity: Int
-    ): CartResponse {
-        return cartService.updateCartItem(cartItemId, quantity)
-    }
+    fun addItemToCart(@Argument productId: String, @Argument quantity: Int): CartResponse =
+        cartService.addItemToCart(productId, quantity)
 
     @MutationMapping
-    fun removeCartItem(
-        @Argument cartItemId: String
-    ): CartResponse {
-        return cartService.removeCartItem(cartItemId)
-    }
+    fun updateCartItem(@Argument cartItemId: String, @Argument quantity: Int): CartResponse =
+        cartService.updateCartItem(cartItemId, quantity)
 
     @MutationMapping
-    fun clearCart(): CartResponse {
-        return cartService.clearCart()
-    }
+    fun removeCartItem(@Argument cartItemId: String): CartResponse =
+        cartService.removeCartItem(cartItemId)
+
+    @MutationMapping
+    fun clearCart(): CartResponse = cartService.clearCart()
 }

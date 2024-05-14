@@ -14,8 +14,7 @@ class CartQueryResolver(
     @QueryMapping
     fun cart(
         @Argument id: String
-    ): CartResponse {
-        return cartService.queryCart(id)
-    }
+    ): CartResponse = cartService.queryCart(id)
+
 }
 

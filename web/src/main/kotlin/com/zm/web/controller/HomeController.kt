@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
 
 @RestController
 @RequestMapping("/api/home")
@@ -27,7 +26,7 @@ class HomeController(
         val member = memberService.getCurrentMember()
         val products = productRepository.findAll().map { fromProduct(it, baseUrl) }
         val cartId = member?.cart?.id
-        val itemsCount = member?.cart?.id?.let { itemRepository.countByCart(Cart(id = it)) } ?: 0
+        val itemsCount = cartId?.let { itemRepository.countByCart(Cart(id = it)) } ?: 0
         val memberName = member?.name ?: "Guest"
         val isCartEmpty = itemsCount == 0
 

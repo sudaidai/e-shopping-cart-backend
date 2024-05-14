@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller
 class GreetResolver {
 
     @QueryMapping
-    fun hello(): String {
-        return "Hello, World!"
-    }
+    fun hello(): String = "Hello, World!"
+
 }

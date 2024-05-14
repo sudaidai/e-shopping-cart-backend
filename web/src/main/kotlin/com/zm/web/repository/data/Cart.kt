@@ -12,7 +12,7 @@ import java.util.*
 
 @Entity
 @Table(name = "cart")
-class Cart (
+class Cart(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
@@ -45,7 +45,13 @@ class Cart (
         updateTime = Instant.now()
     }
 
-    fun toCartResponse(currency: Currency, subTotal: BigDecimal, shippingTotal: BigDecimal, taxTotal: BigDecimal, grandTotal: BigDecimal) = CartResponse(
+    fun toCartResponse(
+        currency: Currency,
+        subTotal: BigDecimal,
+        shippingTotal: BigDecimal,
+        taxTotal: BigDecimal,
+        grandTotal: BigDecimal
+    ) = CartResponse(
         id = id.toString(),
         email = member?.email.orEmpty(),
         isEmpty = cartItems.isEmpty(),

@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/product")
-class ProductController (
+class ProductController(
     private val productRepository: ProductRepository
-){
+) {
     @GetMapping
-    fun listProduct(request: HttpServletRequest): List<ProductDTO>{
+    fun listProduct(request: HttpServletRequest): List<ProductDTO> {
         val baseUrl = "${request.scheme}://${request.serverName}:${request.serverPort}/"
         return productRepository.findAll().stream()
             .map { p -> fromProduct(p, baseUrl) }

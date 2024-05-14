@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class CustomExceptionResolver : DataFetcherExceptionResolverAdapter() {
-    override fun resolveToSingleError(ex: Throwable, env: DataFetchingEnvironment): GraphQLError? {
-        return if (ex is NoSuchElementException) {
+    override fun resolveToSingleError(ex: Throwable, env: DataFetchingEnvironment): GraphQLError? =
+        if (ex is NoSuchElementException) {
             GraphqlErrorBuilder.newError()
                 .errorType(ErrorType.DataFetchingException)
                 .message(ex.message)
@@ -20,5 +20,4 @@ class CustomExceptionResolver : DataFetcherExceptionResolverAdapter() {
         } else {
             null
         }
-    }
 }

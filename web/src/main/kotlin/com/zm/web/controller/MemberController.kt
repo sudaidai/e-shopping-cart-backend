@@ -6,34 +6,23 @@ import com.zm.web.model.request.RegistrationRequest
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.ResponseStatus
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
-// This annotation marks this class as a REST controller
 @RestController
-@RequestMapping("/api/member") // Base path for this controller
+@RequestMapping("/api/member")
 class MemberController(
     private val memberRepository: MemberRepository,
-    private val passwordEncoder: PasswordEncoder // Injecting PasswordEncoder for password encryption
+    private val passwordEncoder: PasswordEncoder
 ) {
 
-    // This annotation maps HTTP POST requests to "/api/member" to this method
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    // @Valid ensures that the incoming request body is validated against the constraints specified in the Registration class
     fun registerMember(@Valid @RequestBody registrationRequest: RegistrationRequest) {
-        // Create a new Member instance using the name from the Registration request body
-        // Encrypt the password before saving it to the database
         val member = Member(
             account = registrationRequest.account,
-            password = passwordEncoder.encode(registrationRequest.password), // Encoding password
+            password = passwordEncoder.encode(registrationRequest.password),
             name = registrationRequest.name
         )
-
-        // Save the member using the injected memberRepository
         memberRepository.save(member)
     }
 }
