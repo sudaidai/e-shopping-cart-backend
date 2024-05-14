@@ -36,8 +36,7 @@ class CartService(
     }
 
     fun updateCartItem(cartItemId: String, quantity: Int): CartResponse {
-        val member = memberService.getCurrentMember()
-            ?: throw BusinessException("Unauthorized")
+        val member = getCurrentMember()
 
         val cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist. Unable to update cart")
@@ -51,8 +50,7 @@ class CartService(
     }
 
     fun removeCartItem(cartItemId: String): CartResponse {
-        val member = memberService.getCurrentMember()
-            ?: throw BusinessException("Unauthorized")
+        val member = getCurrentMember()
 
         val cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist. Unable to delete item from cart")
@@ -66,8 +64,7 @@ class CartService(
     }
 
     fun clearCart(): CartResponse {
-        val member = memberService.getCurrentMember()
-            ?: throw BusinessException("Unauthorized")
+        val member = getCurrentMember()
 
         val cart = cartRepository.findByMember(member)
             ?: throw BusinessException("No cart exist.")
@@ -101,4 +98,7 @@ class CartService(
     private fun calculateTaxTotal(subTotal: BigDecimal): BigDecimal {
         return subTotal.multiply(BigDecimal(0.1))
     }
+
+    private fun getCurrentMember() = memberService.getCurrentMember()
+        ?: throw BusinessException("Unauthorized")
 }
