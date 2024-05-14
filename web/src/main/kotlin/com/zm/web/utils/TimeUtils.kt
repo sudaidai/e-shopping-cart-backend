@@ -5,12 +5,8 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 
 object TimeUtils {
-    fun formatInstant(instant: Instant?): String {
-        if (instant == null) return ""
+    private val formatter: DateTimeFormatter =
+        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC)
 
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-            .withZone(ZoneOffset.UTC)
-
-        return formatter.format(instant)
-    }
+    fun formatInstant(instant: Instant?): String = instant?.let { formatter.format(it) } ?: ""
 }

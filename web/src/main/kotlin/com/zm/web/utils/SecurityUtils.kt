@@ -5,10 +5,13 @@ import org.springframework.security.core.userdetails.User
 
 object SecurityUtils {
     fun getCurrentUser(): String {
-        val principal = SecurityContextHolder.getContext().authentication.principal
-        if (principal is User) {
-            return principal.username
+        val authentication = SecurityContextHolder.getContext().authentication
+        val principal = authentication.principal
+
+        return if (principal is User) {
+            principal.username
+        } else {
+            ""
         }
-        return ""
     }
 }
