@@ -68,9 +68,6 @@ class SecurityConfiguration(
             exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
         }
 
-        // Configure remember-me functionality
-        http.rememberMe(Customizer.withDefaults())
-
         // Configure session management to use stateless sessions
         http.sessionManagement { sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
 
