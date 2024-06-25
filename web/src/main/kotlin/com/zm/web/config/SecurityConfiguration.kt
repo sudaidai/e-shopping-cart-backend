@@ -1,6 +1,5 @@
 package com.zm.web.config
 
-import com.zm.web.handler.JwtAuthenticationEntryPoint
 import com.zm.web.filter.JwtAuthenticationFilter
 import com.zm.web.service.JwtUserDetailService
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
@@ -11,7 +10,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
-import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
@@ -32,8 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 )
 @Configuration
 class SecurityConfiguration(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint
+    private val jwtAuthenticationFilter: JwtAuthenticationFilter
 ) {
     
     companion object {
@@ -64,8 +61,6 @@ class SecurityConfiguration(
                 .requestMatchers(*UNAUTHORIZED_ROUTE).permitAll()
                 // Require authentication for any other request
                 .anyRequest().authenticated()
-        }.exceptionHandling {
-            exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)
         }
 
         // Configure session management to use stateless sessions
