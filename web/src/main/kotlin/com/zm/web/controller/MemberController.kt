@@ -24,9 +24,9 @@ class MemberController(
     @Operation(summary = "Register a new member")
     @ApiResponses(value = [
         ApiResponse(responseCode = "201", description = "Registration successful",
-            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))]),
+            content = [Content(mediaType = "text/plain", schema = Schema(implementation = String::class))]),
         ApiResponse(responseCode = "409", description = "Account (Email) already exists",
-            content = [Content(mediaType = "application/json", schema = Schema(implementation = String::class))])
+            content = [Content(mediaType = "text/plain", schema = Schema(implementation = String::class))])
     ])
     @PostMapping
     fun registerMember(@Valid @RequestBody registrationRequest: RegistrationRequest): ResponseEntity<String> {
