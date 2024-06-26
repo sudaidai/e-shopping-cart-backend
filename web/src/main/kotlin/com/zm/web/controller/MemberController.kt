@@ -35,8 +35,7 @@ class MemberController(
         } else {
             val member = Member(
                 account = registrationRequest.account,
-                password = passwordEncoder.encode(registrationRequest.password),
-                name = registrationRequest.name
+                password = passwordEncoder.encode(registrationRequest.password)
             )
             memberRepository.save(member)
             ResponseEntity.status(HttpStatus.CREATED).body("Registration successful.")

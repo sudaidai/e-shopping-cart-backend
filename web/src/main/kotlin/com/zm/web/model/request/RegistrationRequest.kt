@@ -7,8 +7,5 @@ data class RegistrationRequest(
     val account: String,
 
     @field:NotBlank
-    val password: String,
-
-    @field:NotBlank
-    val name: String
+    val password: String
 )
