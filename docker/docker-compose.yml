@@ -1,0 +1,15 @@
+version: '3.9'
+name: 'mysql'
+services:
+  mysql:
+    restart: always
+    image: "mysql:${MYSQL_VERSION}"
+    container_name: "${CONTAINER_NAME}"
+    volumes:
+      - "${BASE_PATH}/mysql/:/mydir"
+      - "${BASE_PATH}/mysql/datadir:/var/lib/mysql"
+      - "./init.sql:/docker-entrypoint-initdb.d/init.sql"
+    ports:
+      - "${CONTAINER_PORT}:3306"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}"
