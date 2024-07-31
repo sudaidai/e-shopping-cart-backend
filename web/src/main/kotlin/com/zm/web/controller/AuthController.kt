@@ -2,6 +2,7 @@ package com.zm.web.controller
 
 import com.zm.web.model.request.LoginRequest
 import com.zm.web.service.AuthenticationService
+import com.zm.web.service.TokenManagementService
 import io.swagger.v3.oas.annotations.Operation
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
@@ -15,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
-    private val authenticationService: AuthenticationService
+    private val authenticationService: AuthenticationService,
+    private val tokenManagementService: TokenManagementService
 ) {
 
     @Operation(summary = "Authenticate with account and password.")
@@ -27,7 +29,7 @@ class AuthController(
     @Operation(summary = "Invalidate the token.")
     @DeleteMapping
     fun logout(@RequestHeader("Authorization") token: String): ResponseEntity<Void> {
-        authenticationService.invalidateToken(token)
+        tokenManagementService.invalidateToken(token)
         return ResponseEntity.noContent().build()
     }
 }

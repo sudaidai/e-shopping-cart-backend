@@ -1,6 +1,7 @@
 package com.zm.web.filter
 
 import com.zm.web.service.AuthenticationService
+import com.zm.web.service.TokenManagementService
 import com.zm.web.utils.JwtTokenUtils
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -19,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter
 class JwtAuthenticationFilter(
     @Value("\${jwt.key}")
     private val jwtKey: String,
-    private val authenticationService: AuthenticationService
+    private val tokenManagementService: TokenManagementService
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -34,7 +35,7 @@ class JwtAuthenticationFilter(
         val requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
 
         requestTokenHeader?.takeIf { it.startsWith(BEARER_PREFIX) }?.let {
-            if (!authenticationService.isTokenValid(it)) {
+            if (!tokenManagementService.isTokenValid(it)) {
                 response.status = HttpServletResponse.SC_UNAUTHORIZED
                 return
             }
