@@ -34,8 +34,13 @@ class JwtAuthenticationFilter(
         val requestTokenHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
 
         requestTokenHeader?.takeIf { it.startsWith(BEARER_PREFIX) }?.let {
+            if (!authenticationService.isTokenValid(it)) {
+                response.status = HttpServletResponse.SC_UNAUTHORIZED
+                return
+            }
+
             val jwtToken = it.removePrefix(BEARER_PREFIX)
-            if (JwtTokenUtils.validateToken(jwtToken, jwtKey) && authenticationService.isTokenValid(jwtToken)) {
+            if (JwtTokenUtils.validateToken(jwtToken, jwtKey)) {
                 val claims = JwtTokenUtils.getAllClaimsFromToken(jwtToken, jwtKey)
                 val account = claims.subject
                 val authorities = listOf(SimpleGrantedAuthority("MEMBER"))
