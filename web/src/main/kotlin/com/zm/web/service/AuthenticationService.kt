@@ -7,12 +7,16 @@ import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
+import java.util.concurrent.ConcurrentHashMap
 
 @Service
 class AuthenticationService(
     @Value("\${jwt.key}") private val jwtKey: String,
     private val authManager: AuthenticationManager
 ) {
+
+    private val tokenBlacklist = ConcurrentHashMap<String, Boolean>()
+
     fun authenticate(account: String, password: String): String {
         return try {
             authManager.authenticate(UsernamePasswordAuthenticationToken(account, password))
@@ -22,5 +26,13 @@ class AuthenticationService(
         } catch (e: InternalAuthenticationServiceException) {
             throw IllegalArgumentException("BAD_REQUEST", e)
         }
+    }
+
+    fun invalidateToken(token: String) {
+        tokenBlacklist[token] = true
+    }
+
+    fun isTokenValid(token: String): Boolean {
+        return !tokenBlacklist.containsKey(token)
     }
 }

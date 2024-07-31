@@ -1,5 +1,6 @@
 package com.zm.web.filter
 
+import com.zm.web.service.AuthenticationService
 import com.zm.web.utils.JwtTokenUtils
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -16,7 +17,9 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class JwtAuthenticationFilter(
-    @Value("\${jwt.key}") private val jwtKey: String
+    @Value("\${jwt.key}")
+    private val jwtKey: String,
+    private val authenticationService: AuthenticationService
 ) : OncePerRequestFilter() {
 
     companion object {
@@ -32,7 +35,7 @@ class JwtAuthenticationFilter(
 
         requestTokenHeader?.takeIf { it.startsWith(BEARER_PREFIX) }?.let {
             val jwtToken = it.removePrefix(BEARER_PREFIX)
-            if (JwtTokenUtils.validateToken(jwtToken, jwtKey)) {
+            if (JwtTokenUtils.validateToken(jwtToken, jwtKey) && authenticationService.isTokenValid(jwtToken)) {
                 val claims = JwtTokenUtils.getAllClaimsFromToken(jwtToken, jwtKey)
                 val account = claims.subject
                 val authorities = listOf(SimpleGrantedAuthority("MEMBER"))
