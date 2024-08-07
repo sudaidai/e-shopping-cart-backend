@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import jakarta.persistence.Column
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -35,7 +36,12 @@ class MemberController(
         } else {
             val member = Member(
                 account = registrationRequest.account,
-                password = passwordEncoder.encode(registrationRequest.password)
+                password = passwordEncoder.encode(registrationRequest.password),
+                email = registrationRequest.email,
+                name = registrationRequest.name,
+                country = registrationRequest.country,
+                address = registrationRequest.address,
+                phone = registrationRequest.phone
             )
             memberRepository.save(member)
             ResponseEntity.status(HttpStatus.CREATED).body("Registration successful.")
